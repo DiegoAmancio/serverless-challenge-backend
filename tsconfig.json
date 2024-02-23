@@ -16,6 +16,23 @@
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@controller/*": [
+        "src/controller/*"
+      ],
+      "@repository/*": [
+        "src/repository/*"
+      ],
+      "@domain/*": [
+        "src/domain/*"
+      ],
+      "@service/*": [
+        "src/service/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
+      ]
+    }
   }
 }

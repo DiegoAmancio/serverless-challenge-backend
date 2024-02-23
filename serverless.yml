@@ -5,6 +5,36 @@ plugins:
 provider:
   name: aws
   runtime: nodejs20.x
+  environment:
+    EMPLOYEE_TABLE_NAME: employeeTable
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action: 
+          - "dynamodb:PutItem"
+          - "dynamodb:Scan"
+          - "dynamodb:GetItem"
+          - "dynamodb:UpdateItem"
+          - "dynamodb:Query"
+          Resource: 
+            - "Fn::GetAtt": 
+                - "EmployeeTable"
+                - "Arn"
+
+resources:
+  Resources:
+    EmployeeTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: 'PAY_PER_REQUEST'
+        TableName: employeeTable
+        AttributeDefinitions:
+          - AttributeName: Id
+            AttributeType: S                              
+        KeySchema:
+          - AttributeName: Id
+            KeyType: HASH
 functions:
   main:
     handler: dist/lambda.handler
@@ -15,3 +45,9 @@ functions:
       - http:
           method: ANY
           path: "{proxy+}"
+custom:
+  EmployeeTable:
+    name: 
+      'EmployeeTable'
+    arn:
+      
