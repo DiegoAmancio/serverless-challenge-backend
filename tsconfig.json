@@ -18,6 +18,9 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
+      "@controller/*": [
+        "src/controller/*"
+      ],
       "@repository/*": [
         "src/repository/*"
       ],
