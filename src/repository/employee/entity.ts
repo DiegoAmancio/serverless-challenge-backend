@@ -8,7 +8,9 @@ export class EmployeeEntity {
   Cargo: string;
 
   constructor({ Cargo, Id, Idade, Nome }: EmployeeDTO) {
-    this.Id = EmployeeEntity.getPK(Id);
+    this.Id = Id.includes(EmployeeEntity.PK_PREFIX)
+      ? Id
+      : EmployeeEntity.getPK(Id);
     this.Idade = Idade;
     this.Cargo = Cargo;
     this.Nome = Nome;

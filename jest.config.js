@@ -9,7 +9,6 @@ module.exports = {
     '<rootDir>/../src/controller/**/*.ts',
     '<rootDir>/../src/service/**/*.ts',
   ],
-  collectCoverage: true,
   moduleNameMapper: {
     '@controller/(.*)': ['<rootDir>/../src/controller/$1'],
     '@shared/(.*)': ['<rootDir>/../src/shared/$1'],

@@ -17,6 +17,11 @@ export class EmployeeService implements EmployeeServiceImpl {
   ) {
     this.logger = new Logger(EmployeeService.name);
   }
+  update(employee: EmployeeDTO): Promise<void> {
+    this.logger.log(`update`);
+
+    return this.employeeRepository.update(employee);
+  }
   getEmployees(paginationDto: PaginationDto): Promise<EmployeeDTO[]> {
     this.logger.log(`getEmployees`);
 

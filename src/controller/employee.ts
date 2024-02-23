@@ -6,8 +6,13 @@ import {
   Body,
   Get,
   Query,
+  Put,
 } from '@nestjs/common';
-import { EmployeeServiceImpl, CreateEmployeeDTO } from '@domain/employee';
+import {
+  EmployeeServiceImpl,
+  CreateEmployeeDTO,
+  EmployeeDTO,
+} from '@domain/employee';
 import {
   EMPLOYEE_SERVICE,
   formatJSONResponse,
@@ -48,6 +53,18 @@ export class EmployeeController {
         lastIdFromList: lastIdFromList,
       });
       return formatJSONResponse(response, 200);
+    } catch (error) {
+      this.logger.error(error);
+      return internalServerErrorResponse();
+    }
+  }
+
+  @Put()
+  async update(@Body() employee: EmployeeDTO): Promise<any> {
+    this.logger.log(`Create ${JSON.stringify(employee)}`);
+    try {
+      await this.employeeService.update(employee);
+      return formatJSONResponse('Employee Updated', 200);
     } catch (error) {
       this.logger.error(error);
       return internalServerErrorResponse();

@@ -8,6 +8,7 @@ import {
 import {
   DynamoDB,
   PutItemCommandInput,
+  UpdateItemCommandInput,
   ScanCommandInput,
 } from '@aws-sdk/client-dynamodb';
 import { EmployeeEntity } from './entity';
@@ -24,6 +25,24 @@ export class EmployeeRepository implements EmployeeRepositoryImpl {
     this.logger = new Logger(EmployeeRepository.name);
     this.dynamoDB = new DynamoDB();
     this.tableName = process.env.EMPLOYEE_TABLE_NAME;
+  }
+  async update(employee: EmployeeDTO): Promise<void> {
+    this.logger.log(`update`);
+
+    const entity = new EmployeeEntity(employee);
+    const params: UpdateItemCommandInput = {
+      TableName: this.tableName,
+      Key: { Id: { S: entity.Id } },
+      UpdateExpression: 'set Idade = :Idade, Nome = :Nome, Cargo = :Cargo',
+      ExpressionAttributeValues: {
+        ':Idade': { N: entity.Idade.toString() },
+        ':Nome': { S: entity.Nome },
+        ':Cargo': { S: entity.Cargo },
+      },
+      ConditionExpression: 'attribute_exists(Id)',
+    };
+
+    await this.dynamoDB.updateItem(params);
   }
 
   async getEmployees({
