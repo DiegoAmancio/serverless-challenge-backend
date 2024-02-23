@@ -1,10 +1,10 @@
-import { CreateEmployeeDTO } from "./createEmployee";
+import { CreateEmployeeDTO } from './createEmployee';
 
 export class EmployeeDTO extends CreateEmployeeDTO {
-    Id: string;
+  Id: string;
 
-    constructor(values: EmployeeDTO) {
-        super();
-        Object.assign(this, values)
-    }
+  constructor(values: EmployeeDTO) {
+    super();
+    Object.assign(this, values);
+  }
 }

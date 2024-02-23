@@ -1,2 +1,2 @@
-export * from './api-gateway'
-export * from './injects'
+export * from './api-gateway';
+export * from './injects';

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EMPLOYEE_REPOSITORY, EMPLOYEE_SERVICE } from '@shared/injects';
+import { EMPLOYEE_REPOSITORY } from '@shared/injects';
 import { EmployeeRepositoryImpl } from '@domain/employee';
 import { EmployeeService } from '@service/index';
 
@@ -13,12 +13,11 @@ describe('EmployeeService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-
         {
           provide: EMPLOYEE_REPOSITORY,
           useValue: mockRepository,
         },
-        EmployeeService
+        EmployeeService,
       ],
     }).compile();
     service = module.get<EmployeeService>(EmployeeService);
@@ -31,11 +30,11 @@ describe('EmployeeService', () => {
   describe('When create', () => {
     it('should be login in system (is registered)', async () => {
       const body = {
-        Idade: "21",
-        Nome: "Pops5",
-        Cargo: "DEVELOP"
-      }
-      const employee = await service.create(body);
+        Idade: '21',
+        Nome: 'Pops5',
+        Cargo: 'DEVELOP',
+      };
+      await service.create(body);
 
       expect(mockRepository.create).toHaveBeenCalledWith({
         Idade: body.Idade,
