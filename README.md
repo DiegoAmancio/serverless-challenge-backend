@@ -1,4 +1,4 @@
-# summary
+# Summary
 
 [Description](#description) | [Installation](#installation) | [Git Steps](#git-steps) | [Installation](#installation) | [Test](#test) | [System overview](#system-overview)
 ## Description
