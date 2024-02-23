@@ -63,10 +63,10 @@ $ npm run test:cov
 The following images follow the C4 model, where each level delves deeper into the architecture of the project.
 
 ### Context
-![Alt text](docs\c4Model-Context.png "Context")
+![Alt text](docs/c4Model-Context.png "Context")
 
 ### Container
-![Alt text](docs\c4Model-Container.png "Container")
+![Alt text](docs/c4Model-Container.png "Container")
 
 ### Component
-![Alt text](docs\c4Model-Component.png "Component")
+![Alt text](docs/c4Model-Component.png "Component")
