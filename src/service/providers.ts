@@ -1,4 +1,4 @@
-import { EMPLOYEE_SERVICE } from "src/shared";
+import { EMPLOYEE_SERVICE } from "@shared/index";
 import { EmployeeService } from "./employee";
 import { Provider } from "@nestjs/common";
 

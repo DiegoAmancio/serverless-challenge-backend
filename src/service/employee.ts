@@ -1,18 +1,20 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { CreateEmployeeDTO, EmployeeDTO, EmployeeServiceImpl } from "src/domain/employee";
+import { Inject, Injectable, Logger } from "@nestjs/common";
+import { CreateEmployeeDTO, EmployeeDTO, EmployeeRepositoryImpl, EmployeeServiceImpl } from "@domain/employee";
+import { EMPLOYEE_REPOSITORY } from "@shared/injects";
 
 @Injectable()
 export class EmployeeService implements EmployeeServiceImpl {
-    private readonly logger = new Logger(EmployeeService.name);
-
+    private readonly logger;
+    constructor(
+        @Inject(EMPLOYEE_REPOSITORY)
+        private readonly employeeRepository: EmployeeRepositoryImpl,
+    ) {
+        this.logger = new Logger(EmployeeService.name);
+    }
     create(employee: CreateEmployeeDTO): Promise<EmployeeDTO> {
         this.logger.log(`create`)
 
-        return new Promise((resolve) => {
-            resolve(
-                new EmployeeDTO({ Id: '1', ...employee })
-            )
-        })
+        return this.employeeRepository.create(employee)
 
     }
 }
