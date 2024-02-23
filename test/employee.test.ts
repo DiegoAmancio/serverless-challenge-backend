@@ -15,6 +15,7 @@ describe('Employee', () => {
   };
   const mockRepository: EmployeeRepositoryImpl = {
     create: jest.fn().mockReturnValue(defaultEmployee),
+    getEmployees: jest.fn().mockReturnValue([defaultEmployee]),
   };
 
   beforeEach(async () => {
@@ -58,6 +59,30 @@ describe('Employee', () => {
         statusCode: 201,
         body: defaultEmployee,
       });
+    });
+  });
+  it('should be get employees', async () => {
+    const employee = await controller.getEmployees('10');
+
+    expect(mockRepository.getEmployees).toHaveBeenCalledWith({ limit: 10 });
+    expect(mockRepository.getEmployees).toHaveBeenCalledTimes(1);
+    expect(employee).toStrictEqual({
+      statusCode: 200,
+      body: [defaultEmployee],
+    });
+  });
+  it('should be get 0 employees pass default Employee id', async () => {
+    mockRepository.getEmployees = jest.fn().mockReturnValue([]);
+    const employee = await controller.getEmployees('10', defaultEmployee.id);
+
+    expect(mockRepository.getEmployees).toHaveBeenCalledWith({
+      limit: 10,
+      lastIdFromList: defaultEmployee.id,
+    });
+    expect(mockRepository.getEmployees).toHaveBeenCalledTimes(1);
+    expect(employee).toStrictEqual({
+      statusCode: 200,
+      body: [],
     });
   });
 });

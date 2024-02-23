@@ -1,4 +1,12 @@
-import { Controller, Logger, Inject, Post, Body, Get } from '@nestjs/common';
+import {
+  Controller,
+  Logger,
+  Inject,
+  Post,
+  Body,
+  Get,
+  Query,
+} from '@nestjs/common';
 import { EmployeeServiceImpl, CreateEmployeeDTO } from '@domain/employee';
 import {
   EMPLOYEE_SERVICE,
@@ -29,11 +37,17 @@ export class EmployeeController {
   }
 
   @Get()
-  async get(@Body() employee: CreateEmployeeDTO): Promise<any> {
-    this.logger.log(`Create ${JSON.stringify(employee)}`);
+  async getEmployees(
+    @Query('limit') limit: string,
+    @Query('lastIdFromList') lastIdFromList?: string,
+  ): Promise<any> {
+    this.logger.log(`getEmployees ${limit}`);
     try {
-      const response = await this.employeeService.create(employee);
-      return formatJSONResponse(response, 201);
+      const response = await this.employeeService.getEmployees({
+        limit: Number.parseInt(limit),
+        lastIdFromList: lastIdFromList,
+      });
+      return formatJSONResponse(response, 200);
     } catch (error) {
       this.logger.error(error);
       return internalServerErrorResponse();

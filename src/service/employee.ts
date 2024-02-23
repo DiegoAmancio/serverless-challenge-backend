@@ -4,6 +4,7 @@ import {
   EmployeeDTO,
   EmployeeRepositoryImpl,
   EmployeeServiceImpl,
+  PaginationDto,
 } from '@domain/employee';
 import { EMPLOYEE_REPOSITORY } from '@shared/injects';
 
@@ -15,6 +16,11 @@ export class EmployeeService implements EmployeeServiceImpl {
     private readonly employeeRepository: EmployeeRepositoryImpl,
   ) {
     this.logger = new Logger(EmployeeService.name);
+  }
+  getEmployees(paginationDto: PaginationDto): Promise<EmployeeDTO[]> {
+    this.logger.log(`getEmployees`);
+
+    return this.employeeRepository.getEmployees(paginationDto);
   }
   create(employee: CreateEmployeeDTO): Promise<EmployeeDTO> {
     this.logger.log(`create`);
