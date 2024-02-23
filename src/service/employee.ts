@@ -17,6 +17,11 @@ export class EmployeeService implements EmployeeServiceImpl {
   ) {
     this.logger = new Logger(EmployeeService.name);
   }
+  delete(id: string): Promise<void> {
+    this.logger.log(`delete`);
+
+    return this.employeeRepository.delete(id);
+  }
   update(employee: EmployeeDTO): Promise<void> {
     this.logger.log(`update`);
 

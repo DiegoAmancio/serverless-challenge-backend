@@ -10,6 +10,7 @@ import {
   PutItemCommandInput,
   UpdateItemCommandInput,
   ScanCommandInput,
+  DeleteItemCommandInput,
 } from '@aws-sdk/client-dynamodb';
 import { EmployeeEntity } from './entity';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
@@ -25,6 +26,16 @@ export class EmployeeRepository implements EmployeeRepositoryImpl {
     this.logger = new Logger(EmployeeRepository.name);
     this.dynamoDB = new DynamoDB();
     this.tableName = process.env.EMPLOYEE_TABLE_NAME;
+  }
+  async delete(id: string): Promise<void> {
+    this.logger.log(`delete`);
+
+    const params: DeleteItemCommandInput = {
+      TableName: this.tableName,
+      Key: { Id: { S: id } },
+    };
+
+    await this.dynamoDB.deleteItem(params);
   }
   async update(employee: EmployeeDTO): Promise<void> {
     this.logger.log(`update`);

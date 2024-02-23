@@ -7,6 +7,8 @@ import {
   Get,
   Query,
   Put,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import {
   EmployeeServiceImpl,
@@ -17,6 +19,7 @@ import {
   EMPLOYEE_SERVICE,
   formatJSONResponse,
   internalServerErrorResponse,
+  onlyOkResponse,
 } from '@shared/index';
 
 @Controller('employee')
@@ -61,10 +64,22 @@ export class EmployeeController {
 
   @Put()
   async update(@Body() employee: EmployeeDTO): Promise<any> {
-    this.logger.log(`Create ${JSON.stringify(employee)}`);
+    this.logger.log(`update ${JSON.stringify(employee)}`);
     try {
       await this.employeeService.update(employee);
       return formatJSONResponse('Employee Updated', 200);
+    } catch (error) {
+      this.logger.error(error);
+      return internalServerErrorResponse();
+    }
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<any> {
+    this.logger.log(`delete ${id}`);
+    try {
+      await this.employeeService.delete(id);
+      return onlyOkResponse();
     } catch (error) {
       this.logger.error(error);
       return internalServerErrorResponse();
