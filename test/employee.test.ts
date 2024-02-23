@@ -20,6 +20,7 @@ describe('Employee', () => {
     create: jest.fn().mockReturnValue(defaultEmployee),
     getEmployees: jest.fn().mockReturnValue([defaultEmployee]),
     update: jest.fn().mockReturnValue(null),
+    delete: jest.fn().mockReturnValue(null),
   };
 
   beforeEach(async () => {
@@ -108,6 +109,30 @@ describe('Employee', () => {
       }),
     );
     const response = await controller.update(defaultEmployee);
+
+    expect(response).toStrictEqual(internalServerErrorResponse());
+  });
+
+  it('should be can delete employee', async () => {
+    const response = await controller.delete(defaultEmployee.Id);
+
+    expect(mockRepository.delete).toHaveBeenCalledWith(defaultEmployee.Id);
+    expect(mockRepository.delete).toHaveBeenCalledTimes(1);
+    expect(response).toStrictEqual({
+      statusCode: 200,
+    });
+  });
+
+  it('can not delete employee', async () => {
+    mockRepository.delete = jest.fn().mockReturnValue(
+      new Promise((_resolve, reject) => {
+        reject('Error');
+      }),
+    );
+    const response = await controller.delete(defaultEmployee.Id);
+
+    expect(mockRepository.delete).toHaveBeenCalledWith(defaultEmployee.Id);
+    expect(mockRepository.delete).toHaveBeenCalledTimes(1);
 
     expect(response).toStrictEqual(internalServerErrorResponse());
   });

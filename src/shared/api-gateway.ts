@@ -8,5 +8,9 @@ export const createdResponse = () => ({
   statusCode: 201,
 });
 
+export const onlyOkResponse = () => ({
+  statusCode: 200,
+});
+
 export const internalServerErrorResponse = () =>
   formatJSONResponse({ message: 'INTERNAL Server Error' }, 500);
