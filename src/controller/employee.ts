@@ -9,19 +9,27 @@ import {
   Put,
   Delete,
   Param,
+  HttpCode,
+  InternalServerErrorException,
+  Res,
 } from '@nestjs/common';
 import {
   EmployeeServiceImpl,
   CreateEmployeeDTO,
   EmployeeDTO,
 } from '@domain/employee';
+import { EMPLOYEE_SERVICE } from '@shared/index';
 import {
-  EMPLOYEE_SERVICE,
-  formatJSONResponse,
-  internalServerErrorResponse,
-  onlyOkResponse,
-} from '@shared/index';
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiOkResponse,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Response } from 'express';
 
+@ApiTags('employee')
 @Controller('employee')
 export class EmployeeController {
   private readonly logger;
@@ -33,56 +41,112 @@ export class EmployeeController {
   }
 
   @Post()
-  async create(@Body() employee: CreateEmployeeDTO): Promise<any> {
+  @HttpCode(201)
+  @ApiCreatedResponse({
+    description: 'The employee has been successfully created.',
+    type: EmployeeDTO,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal Server Error',
+  })
+  async create(
+    @Body() employee: CreateEmployeeDTO,
+    @Res() response: Response,
+  ): Promise<any> {
     this.logger.log(`Create ${JSON.stringify(employee)}`);
     try {
-      const response = await this.employeeService.create(employee);
-      return formatJSONResponse(response, 201);
+      const employeeCreated = await this.employeeService.create(employee);
+      response.status(201).json(employeeCreated);
     } catch (error) {
       this.logger.error(error);
-      return internalServerErrorResponse();
+      throw new InternalServerErrorException();
     }
   }
 
   @Get()
+  @ApiCreatedResponse({
+    type: [EmployeeDTO],
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: 'number',
+    required: true,
+    description: 'Limit results',
+  })
+  @ApiQuery({
+    name: 'lastIdFromList',
+    type: 'string',
+    required: false,
+    description: 'Last item ID from previous list',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal Server Error',
+  })
   async getEmployees(
+    @Res() response: Response,
     @Query('limit') limit: string,
     @Query('lastIdFromList') lastIdFromList?: string,
   ): Promise<any> {
     this.logger.log(`getEmployees ${limit}`);
+
     try {
-      const response = await this.employeeService.getEmployees({
+      const employees = await this.employeeService.getEmployees({
         limit: Number.parseInt(limit),
         lastIdFromList: lastIdFromList,
       });
-      return formatJSONResponse(response, 200);
+      response.status(200).json(employees);
     } catch (error) {
       this.logger.error(error);
-      return internalServerErrorResponse();
+      throw new InternalServerErrorException();
     }
   }
 
   @Put()
-  async update(@Body() employee: EmployeeDTO): Promise<any> {
+  @ApiOkResponse({
+    description: 'Success',
+    schema: {
+      type: 'string',
+      example: 'Employee Updated',
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal Server Error',
+  })
+  async update(
+    @Body() employee: EmployeeDTO,
+    @Res() response: Response,
+  ): Promise<any> {
     this.logger.log(`update ${JSON.stringify(employee)}`);
     try {
       await this.employeeService.update(employee);
-      return formatJSONResponse('Employee Updated', 200);
+      response.status(200).json('Employee Updated');
     } catch (error) {
       this.logger.error(error);
-      return internalServerErrorResponse();
+      throw new InternalServerErrorException();
     }
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<any> {
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    required: true,
+    description: 'Employee Id',
+  })
+  @ApiOkResponse({
+    description: 'Success',
+  })
+  async delete(
+    @Param('id') id: string,
+    @Res() response: Response,
+  ): Promise<any> {
     this.logger.log(`delete ${id}`);
     try {
       await this.employeeService.delete(id);
-      return onlyOkResponse();
+      response.status(200).send();
     } catch (error) {
       this.logger.error(error);
-      return internalServerErrorResponse();
+      throw new InternalServerErrorException();
     }
   }
 }
