@@ -31,28 +31,29 @@ Choose one of these options and proceed to the end of the process:
 
 ![Alt text](docs\commitzen.png "Commit")
 
-<!-- 
+
 ## Running the app
 
 ```bash
-# development
-$ npm run start
+## build first
 
-# watch mode
-$ npm run start:dev
+$ npm run build
 
-# production mode
-$ npm run start:prod
-``` -->
+## local
+
+serverless offline 
+
+## aws
+
+serverless deploy
+
+```
 
 ## Test
 
 ```bash
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
 
 # test coverage
 $ npm run test:cov

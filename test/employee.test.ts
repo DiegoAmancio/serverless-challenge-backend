@@ -1,15 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  EMPLOYEE_REPOSITORY,
-  EMPLOYEE_SERVICE,
-  internalServerErrorResponse,
-} from '@shared/index';
 import { EmployeeDTO, EmployeeRepositoryImpl } from '@domain/employee';
-import { EmployeeService } from '@service/index';
-import { EmployeeController } from '@controller/employee';
+import { EmployeeService } from '@service/employee';
+import { EMPLOYEE_REPOSITORY } from '@shared/injects';
 
 describe('Employee', () => {
-  let controller: EmployeeController;
+  let service: EmployeeService;
   const defaultEmployee = new EmployeeDTO({
     Idade: '25',
     Nome: 'Top',
@@ -25,24 +20,20 @@ describe('Employee', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [EmployeeController],
       providers: [
         {
           provide: EMPLOYEE_REPOSITORY,
           useValue: mockRepository,
         },
-        {
-          provide: EMPLOYEE_SERVICE,
-          useClass: EmployeeService,
-        },
+        EmployeeService,
       ],
     }).compile();
 
-    controller = module.get<EmployeeController>(EmployeeController);
+    service = module.get<EmployeeService>(EmployeeService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 
   describe('When create', () => {
@@ -52,7 +43,7 @@ describe('Employee', () => {
         Idade: defaultEmployee.Idade,
         Nome: defaultEmployee.Nome,
       };
-      const employee = await controller.create(body);
+      const employee = await service.create(body);
 
       expect(mockRepository.create).toHaveBeenCalledWith({
         Idade: body.Idade,
@@ -60,80 +51,42 @@ describe('Employee', () => {
         Cargo: body.Cargo,
       });
       expect(mockRepository.create).toHaveBeenCalledTimes(1);
-      expect(employee).toStrictEqual({
-        statusCode: 201,
-        body: defaultEmployee,
-      });
+      expect(employee).toStrictEqual(defaultEmployee);
     });
   });
   it('should be get employees', async () => {
-    const employee = await controller.getEmployees('10');
+    const employee = await service.getEmployees({ limit: 10 });
 
     expect(mockRepository.getEmployees).toHaveBeenCalledWith({ limit: 10 });
     expect(mockRepository.getEmployees).toHaveBeenCalledTimes(1);
-    expect(employee).toStrictEqual({
-      statusCode: 200,
-      body: [defaultEmployee],
-    });
+    expect(employee).toStrictEqual([defaultEmployee]);
   });
   it('should be get 0 employees pass default Employee id', async () => {
     mockRepository.getEmployees = jest.fn().mockReturnValue([]);
-    const employee = await controller.getEmployees('10', defaultEmployee.Id);
+    const employee = await service.getEmployees({
+      limit: 10,
+      lastIdFromList: defaultEmployee.Id,
+    });
 
     expect(mockRepository.getEmployees).toHaveBeenCalledWith({
       limit: 10,
       lastIdFromList: defaultEmployee.Id,
     });
     expect(mockRepository.getEmployees).toHaveBeenCalledTimes(1);
-    expect(employee).toStrictEqual({
-      statusCode: 200,
-      body: [],
-    });
+    expect(employee).toStrictEqual([]);
   });
 
   it('should be can update employee', async () => {
-    const employee = await controller.update(defaultEmployee);
+    await service.update(defaultEmployee);
 
     expect(mockRepository.update).toHaveBeenCalledWith(defaultEmployee);
     expect(mockRepository.update).toHaveBeenCalledTimes(1);
-    expect(employee).toStrictEqual({
-      statusCode: 200,
-      body: 'Employee Updated',
-    });
-  });
-
-  it('can not update employee (not exist)', async () => {
-    mockRepository.update = jest.fn().mockReturnValue(
-      new Promise((_resolve, reject) => {
-        reject('Item not found');
-      }),
-    );
-    const response = await controller.update(defaultEmployee);
-
-    expect(response).toStrictEqual(internalServerErrorResponse());
   });
 
   it('should be can delete employee', async () => {
-    const response = await controller.delete(defaultEmployee.Id);
+    await service.delete(defaultEmployee.Id);
 
     expect(mockRepository.delete).toHaveBeenCalledWith(defaultEmployee.Id);
     expect(mockRepository.delete).toHaveBeenCalledTimes(1);
-    expect(response).toStrictEqual({
-      statusCode: 200,
-    });
-  });
-
-  it('can not delete employee', async () => {
-    mockRepository.delete = jest.fn().mockReturnValue(
-      new Promise((_resolve, reject) => {
-        reject('Error');
-      }),
-    );
-    const response = await controller.delete(defaultEmployee.Id);
-
-    expect(mockRepository.delete).toHaveBeenCalledWith(defaultEmployee.Id);
-    expect(mockRepository.delete).toHaveBeenCalledTimes(1);
-
-    expect(response).toStrictEqual(internalServerErrorResponse());
   });
 });

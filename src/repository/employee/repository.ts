@@ -46,7 +46,7 @@ export class EmployeeRepository implements EmployeeRepositoryImpl {
       Key: { Id: { S: entity.Id } },
       UpdateExpression: 'set Idade = :Idade, Nome = :Nome, Cargo = :Cargo',
       ExpressionAttributeValues: {
-        ':Idade': { N: entity.Idade.toString() },
+        ':Idade': { S: entity.Idade },
         ':Nome': { S: entity.Nome },
         ':Cargo': { S: entity.Cargo },
       },
