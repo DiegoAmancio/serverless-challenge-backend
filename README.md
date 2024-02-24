@@ -1,6 +1,6 @@
 # Summary
 
-[Description](#description) | [Installation](#installation) | [Git Steps](#git-steps) | [Installation](#installation) | [Test](#test) | [System overview](#system-overview) | [Swagger](#swagger)
+[Description](#description) | [Installation](#installation) | [Git Steps](#git-steps) | [Installation](#installation) | [Running the app](#running-the-app) | [Test](#test) | [System overview](#system-overview) | [Swagger](#swagger)
 ## Description
 
  It is a system where you can manage registered employees (create, view, update, and delete). It is being utilized with [serverless](https://www.serverless.com/) (AWS Lambda), [NestJS](https://github.com/nestjs/nest)  framework, and a NoSQL database [DynamoDB](https://aws.amazon.com/dynamodb/)
@@ -75,7 +75,7 @@ The following images follow the C4 model, where each level delves deeper into th
 
 ### Swagger
 
-endpoint - this is for dev env
+endpoint - this is for dev env, you need run the [Server](#running-the-app) 
 
 ```bash
 $ http://localhost:3000/dev/api#/employee
